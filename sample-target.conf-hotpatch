@@ -1,0 +1,10 @@
+!sdbpatch
+APP=sample-target.exe
+DBNAME=sample target patch
+#
+# comment
+#
+P:%windir%\system32\mshtml.dll
+	MR:mshtml.dll,0x72e50b,8bff558bec83e4f8b84c,ebf9
+	R:mshtml.dll,0x72e506,e8ffffff01
+!endsdbpatch
