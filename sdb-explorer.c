@@ -1,5 +1,5 @@
 /*
-Copyright (c) 2014, Jon Erickson
+Copyright (c) 2014-2015, Jon Erickson
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
@@ -162,7 +162,7 @@ void safeCoCreateGuid(LPGUID guid)
 void usage()
 {
 	fprintf(stderr, "sdb-explorer\n");
-	fpritnf(stderr, "Copyright (C) 2014 Jon Erickson\n\n");
+	fprintf(stderr, "Copyright (C) 2015 Jon Erickson\n\n");
 
 	fprintf(stderr, "Print full sdb tree\n");
 	fprintf(stderr, "\tsdb-explorer.exe -t filename.sdb\n\n");
@@ -662,6 +662,7 @@ void printLeaked(PDB db, TAGID tid, HANDLE leakF)
 	}
 }
 
+
 void printTree(PDB db, TAGID tid, DWORD level)
 {
 	TAG tmpTag = 0;
@@ -699,7 +700,7 @@ void printTree(PDB db, TAGID tid, DWORD level)
 					if (SdbIsStandardDatabasePtr(guid))
 					{
 						wprintf(L" STANDARD");
-					} 
+					}
 					else
 					{
 						wprintf(L" NON-STANDARD");
@@ -734,7 +735,7 @@ void printTree(PDB db, TAGID tid, DWORD level)
 			for (i = 0; i < dwD; i++)
 			{
 				wprintf(L"%02x ", foo[i]);
-				if (((i+1)%16) == 0)
+				if (((i + 1) % 16) == 0)
 				{
 					wprintf(L"\n");
 				}
@@ -745,9 +746,12 @@ void printTree(PDB db, TAGID tid, DWORD level)
 
 			// dwords
 		case TAG_PATCH_TAGID:
+		case TAG_SHIM_TAGID:
 		case TAG_PE_CHECKSUM:
 		case TAG_CHECKSUM:
 		case TAG_DATA_DWORD:
+		case TAG_OS_PLATFORM:
+		case TAG_DESCRIPTION_RC_ID:
 		case TAG_INDEX_FLAGS:
 			dwD = SdbReadDWORDTagPtr(db, newtid, -1);
 			wprintf(L": %d (0x%x)", dwD, dwD);
@@ -770,12 +774,16 @@ void printTree(PDB db, TAGID tid, DWORD level)
 		case TAG_PRODUCT_VERSION:
 		case TAG_STRINGTABLE_ITEM:
 		case TAG_MODULE:
+		case TAG_FILE_DESCRIPTION:
 		case TAG_COMMAND_LINE:
+		case TAG_DLLFILE:
 		case TAG_FLAGS:
 			wprintf(L": %ws", SdbGetStringTagPtrPtr(db, newtid));
 			break;
 
 			// quad word
+		case TAG_UPTO_BIN_PRODUCT_VERSION:
+		case TAG_UPTO_BIN_FILE_VERSION:
 		case TAG_BIN_FILE_VERSION:
 			quadword = SdbReadQWORDTagPtr(db, newtid, -1);
 			wprintf(L": %d.", ((short*)&quadword)[3]);
@@ -793,7 +801,7 @@ void printTree(PDB db, TAGID tid, DWORD level)
 		// recursive
 		if ((tmpTag & TAG_TYPE_LIST) == TAG_TYPE_LIST)
 		{
-			printTree(db, newtid, level+1);
+			printTree(db, newtid, level + 1);
 		}
 
 		// get next tag
