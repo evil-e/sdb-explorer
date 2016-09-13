@@ -31,8 +31,8 @@ either expressed or implied, of the FreeBSD Project.
 #include <windows.h>
 
 typedef DWORD TAGID;
-typedef DWORD TAGREF;
-typedef DWORD TAG;
+typedef USHORT TAGREF;
+typedef USHORT TAG;
 typedef PVOID PDB;
 typedef HANDLE HSDB;
 
